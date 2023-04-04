@@ -86,6 +86,10 @@ public class RSVPRepository {
     }
 
     private boolean updateRSVP(RSVP existingRSVP) {
-        return template.update(DBQueries.UPDATE_RSVP_BY_EMAIL, existingRSVP.getName(), existingRSVP.getPhone(), existingRSVP.getConfirmationDate().toDateTime().getMillis(), existingRSVP.getComments()) > 0;
+        return template.update(DBQueries.UPDATE_RSVP_BY_EMAIL, 
+        existingRSVP.getName(),
+        existingRSVP.getPhone(), 
+        new Timestamp(existingRSVP.getConfirmationDate().toDateTime().getMillis()), 
+        existingRSVP.getComments()) > 0;
     }
 }
