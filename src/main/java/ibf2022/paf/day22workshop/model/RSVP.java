@@ -1,10 +1,15 @@
 package ibf2022.paf.day22workshop.model;
 
+import java.io.ByteArrayInputStream;
+
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import jakarta.json.JsonValue;
 
 public class RSVP {
@@ -92,9 +97,17 @@ public class RSVP {
         .build();
     }
 
-    public RSVP create(String json) {
-        
-        return null;
+    public static RSVP create(String json) {
+        RSVP rsvp = new RSVP();
+        JsonReader jr = Json.createReader(new ByteArrayInputStream(json.getBytes()));
+        JsonObject jo = jr.readObject();
+        rsvp.setName(jo.getString("name"));
+        rsvp.setEmail(jo.getString("email"));
+        rsvp.setPhone(jo.getString("phone"));
+        rsvp.setComments(jo.getString("comments"));
+        rsvp.setConfirmDate(new DateTime(Instant.parse(jo.getString("confirmation_date"))));
+
+        return rsvp;
     }
 
 }

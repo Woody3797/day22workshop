@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,9 @@ public class RSVPRepository {
         while (rs.next()) {
             rsvpList.add(RSVP.create(rs));
         }
-
+        if (rsvpList.size() == 0) {
+            return null;
+        }
         return rsvpList.get(0);
     }
 
@@ -85,11 +88,16 @@ public class RSVPRepository {
         return rsvp;
     }
 
-    private boolean updateRSVP(RSVP existingRSVP) {
+    public boolean updateRSVP(RSVP existingRSVP) {
         return template.update(DBQueries.UPDATE_RSVP_BY_EMAIL, 
         existingRSVP.getName(),
         existingRSVP.getPhone(), 
         new Timestamp(existingRSVP.getConfirmationDate().toDateTime().getMillis()), 
         existingRSVP.getComments()) > 0;
+    }
+
+    public Long getTotalRSVPCount() {
+        List<Map<String, Object>> rows = template.queryForList(DBQueries.TOTAL_RSVP_COUNT);
+        return (Long) rows.get(0).get("total_count");
     }
 }
