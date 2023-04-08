@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +44,7 @@ public class RSVPRestController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(result.toString());
     }
 
-    @GetMapping("/rsvp/")
+    @GetMapping("/rsvp")
     public ResponseEntity<String> getRSVPByName(@RequestParam String name) {
         List<RSVP> rsvps = repository.getRSVPByName(name);
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -79,8 +81,8 @@ public class RSVPRestController {
 
 
     @PutMapping(path = "/rsvp", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> putRSVP(@RequestBody String json){
-        RSVP rsvp = null;
+    public ResponseEntity<String> putRSVP(@RequestBody String json, Model model, @ModelAttribute RSVP rsvp){
+        rsvp = null;
         boolean rsvpResult = false;
         JsonObject resp;
         try {

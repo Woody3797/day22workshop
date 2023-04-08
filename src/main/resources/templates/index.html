@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>RSVP Form</h1>
+    <div>
+        <form th:action="@{/rsvp}" method="put">
+            <input type="text" id="name" name="name">
+            <input type="text" id="email" name="email">
+            <input type="text" id="phone" name="phone">
+            <input type="datetime" id="confirmation_date" name="confirmation_date">
+            <input type="text" id="comments" name="comments">
+            <button type="submit" ></button>
+        </form>
+    </div>
+</body>
+</html>

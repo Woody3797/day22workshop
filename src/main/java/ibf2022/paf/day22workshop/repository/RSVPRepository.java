@@ -66,7 +66,7 @@ public class RSVPRepository {
                 statement.setString(1, rsvp.getName());
                 statement.setString(2, rsvp.getEmail());
                 statement.setString(3, rsvp.getPhone());
-                statement.setTimestamp(4, new Timestamp(rsvp.getConfirmationDate().toDateTime().getMillis()));
+                statement.setTimestamp(4, Timestamp.valueOf(rsvp.getConfirmationDate()));
                 statement.setString(5, rsvp.getComments());
                 return statement;
             }, keyHolder);
@@ -76,7 +76,7 @@ public class RSVPRepository {
         } else {
             existingRSVP.setName(rsvp.getName());
             existingRSVP.setPhone(rsvp.getPhone());
-            existingRSVP.setConfirmDate(rsvp.getConfirmationDate());
+            existingRSVP.setConfirmationDate(rsvp.getConfirmationDate());
             existingRSVP.setComments(rsvp.getComments());
 
             boolean isUpdated = updateRSVP(existingRSVP);
@@ -92,7 +92,7 @@ public class RSVPRepository {
         return template.update(DBQueries.UPDATE_RSVP_BY_EMAIL, 
         existingRSVP.getName(),
         existingRSVP.getPhone(), 
-        new Timestamp(existingRSVP.getConfirmationDate().toDateTime().getMillis()), 
+        existingRSVP.getConfirmationDate(), 
         existingRSVP.getComments()) > 0;
     }
 

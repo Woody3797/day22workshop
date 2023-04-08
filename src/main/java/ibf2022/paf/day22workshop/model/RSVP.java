@@ -1,10 +1,13 @@
 package ibf2022.paf.day22workshop.model;
 
 import java.io.ByteArrayInputStream;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
-import org.joda.time.DateTime;
-import org.joda.time.Instant;
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import jakarta.json.Json;
@@ -18,7 +21,7 @@ public class RSVP {
     private String name;
     private String email;
     private String phone;
-    private DateTime confirmationDate;
+    private LocalDateTime confirmationDate;
     private String comments;
 
     public Integer getId() {
@@ -45,11 +48,11 @@ public class RSVP {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    public DateTime getConfirmationDate() {
+    public LocalDateTime getConfirmationDate() {
         return confirmationDate;
     }
-    public void setConfirmDate(DateTime confirmDate) {
-        this.confirmationDate = confirmDate;
+    public void setConfirmationDate(LocalDateTime confirmationDate) {
+        this.confirmationDate = confirmationDate;
     }
     public String getComments() {
         return comments;
@@ -61,7 +64,7 @@ public class RSVP {
     public RSVP() {
     }
 
-    public RSVP(Integer id, String name, String email, String phone, DateTime confirmationDate, String comments) {
+    public RSVP(Integer id, String name, String email, String phone, LocalDateTime confirmationDate, String comments) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -82,7 +85,12 @@ public class RSVP {
         rsvp.setName(rs.getString("name"));
         rsvp.setEmail(rs.getString("email"));
         rsvp.setPhone(rs.getString("phone"));
-        rsvp.setConfirmDate(new DateTime(DateTimeFormat.forPattern("YYYY-MM-dd'T'hh:mm").parseDateTime(rs.getString("confirmation_date"))));
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE)
+            .appendLiteral('T')
+            .append(DateTimeFormatter.ISO_LOCAL_TIME)
+            .toFormatter();
+        rsvp.setConfirmationDate(LocalDateTime.parse(rs.getString("confirmation_date"), formatter));
         rsvp.setComments(rs.getString("comments"));
         return rsvp;
     }
@@ -92,7 +100,7 @@ public class RSVP {
         .add("id", getId())
         .add("name", getName())
         .add("email", getEmail())
-        .add("confirmation_date", getConfirmationDate().toString(DateTimeFormat.forPattern("dd-MM-YYYY")))
+        .add("confirmation_date", DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(getConfirmationDate()))
         .add("comments", getComments())
         .build();
     }
@@ -105,7 +113,7 @@ public class RSVP {
         rsvp.setEmail(jo.getString("email"));
         rsvp.setPhone(jo.getString("phone"));
         rsvp.setComments(jo.getString("comments"));
-        rsvp.setConfirmDate(new DateTime(Instant.parse(jo.getString("confirmation_date"))));
+        rsvp.setConfirmationDate(LocalDateTime.parse(jo.getString("confirmation_date")));
 
         return rsvp;
     }
