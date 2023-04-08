@@ -1,9 +1,12 @@
 package ibf2022.paf.day22workshop.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import ibf2022.paf.day22workshop.model.RSVP;
 import ibf2022.paf.day22workshop.repository.RSVPRepository;
@@ -44,7 +48,7 @@ public class RSVPRestController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(result.toString());
     }
 
-    @GetMapping("/rsvp")
+    @GetMapping(path = "/rsvp", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getRSVPByName(@RequestParam String name) {
         List<RSVP> rsvps = repository.getRSVPByName(name);
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -59,21 +63,21 @@ public class RSVPRestController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(result.toString());
     }
 
-    @PostMapping(path = "/rsvp", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> insertUpdateRSVP(@RequestBody String json) {
-        RSVP rsvp = null;
+    @PostMapping(path = "/rsvp", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> insertUpdateRSVP(@ModelAttribute RSVP rsvp) {        
         JsonObject jo = null;
+        boolean isExist = repository.getRsvpByEmail(rsvp.getEmail()) != null ? true : false;
         try {
-            rsvp = RSVP.create(json);
         } catch (Exception e) {
             e.printStackTrace();
             jo = Json.createObjectBuilder().add("error", e.getMessage()).build();
             return ResponseEntity.badRequest().body(jo.toString());
         }
-        
         RSVP result = repository.createRsvp(rsvp);
+        String resp = isExist ? "RSVP entry " + rsvp.getId() + " is updated" : "RSVP entry " + rsvp.getId() + " is added into entries";
         jo = Json.createObjectBuilder()
         .add("rsvpId", result.getId())
+        .add("response", resp)
         .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(jo.toString());

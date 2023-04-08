@@ -9,13 +9,17 @@
 <body>
     <h1>RSVP Form</h1>
     <div>
-        <form th:action="@{/rsvp}" method="put">
-            <input type="text" id="name" name="name">
-            <input type="text" id="email" name="email">
-            <input type="text" id="phone" name="phone">
-            <input type="datetime" id="confirmation_date" name="confirmation_date">
-            <input type="text" id="comments" name="comments">
-            <button type="submit" ></button>
+        <form th:action="@{/api/rsvp}" method="post">
+            Name: <input type="text" id="name" name="name" >
+            <br>
+            Email: <input type="email" id="email" name="email" required>
+            <br>
+            Phone: <input type="text" id="phone" name="phone" >
+            <br>
+            Date: <input type="datetime-local" id="confirmationDate" name="confirmationDate">
+            <br>
+            Comments: <input type="text" id="comments" name="comments">
+            <input type="submit" value="Submit"></input>
         </form>
     </div>
 </body>

@@ -85,11 +85,13 @@ public class RSVP {
         rsvp.setName(rs.getString("name"));
         rsvp.setEmail(rs.getString("email"));
         rsvp.setPhone(rs.getString("phone"));
+        // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:[..]");
         DateTimeFormatter formatter = new DateTimeFormatterBuilder()
             .append(DateTimeFormatter.ISO_LOCAL_DATE)
             .appendLiteral('T')
             .append(DateTimeFormatter.ISO_LOCAL_TIME)
             .toFormatter();
+      
         rsvp.setConfirmationDate(LocalDateTime.parse(rs.getString("confirmation_date"), formatter));
         rsvp.setComments(rs.getString("comments"));
         return rsvp;

@@ -93,7 +93,8 @@ public class RSVPRepository {
         existingRSVP.getName(),
         existingRSVP.getPhone(), 
         existingRSVP.getConfirmationDate(), 
-        existingRSVP.getComments()) > 0;
+        existingRSVP.getComments(),
+        existingRSVP.getEmail()) > 0;
     }
 
     public Long getTotalRSVPCount() {
