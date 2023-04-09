@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,34 +64,65 @@ public class RSVPRestController {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(result.toString());
     }
 
+    // insert/update form data into mysql table
     @PostMapping(path = "/rsvp", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> insertUpdateRSVP(@ModelAttribute RSVP rsvp) {        
+    public ResponseEntity<String> insertUpdateRSVPForm(@ModelAttribute RSVP rsvp) {        
         JsonObject jo = null;
         boolean isExist = repository.getRsvpByEmail(rsvp.getEmail()) != null ? true : false;
         try {
+            RSVP result = repository.createRsvp(rsvp);
+            String resp = isExist ? "RSVP entry " + rsvp.getId() + " is updated" : "RSVP entry " + rsvp.getId() + " is added into entries";
+            jo = Json.createObjectBuilder()
+            .add("rsvpId", result.getId())
+            .add("response", resp)
+            .build();
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(jo.toString());
         } catch (Exception e) {
             e.printStackTrace();
             jo = Json.createObjectBuilder().add("error", e.getMessage()).build();
             return ResponseEntity.badRequest().body(jo.toString());
         }
-        RSVP result = repository.createRsvp(rsvp);
-        String resp = isExist ? "RSVP entry " + rsvp.getId() + " is updated" : "RSVP entry " + rsvp.getId() + " is added into entries";
-        jo = Json.createObjectBuilder()
-        .add("rsvpId", result.getId())
-        .add("response", resp)
-        .build();
-
-        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(jo.toString());
     }
 
+    // insert/update json data into mysql table
+    @PostMapping(path = "/rsvp", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> insertUpdateRSVPJson(@RequestBody String json) {
+        JsonObject jo = null;
+        try {
+        RSVP rsvp = RSVP.create(json); // converting json to java object
+        RSVP result = repository.createRsvp(rsvp);
+        jo = Json.createObjectBuilder()
+        .add("rsvpID", result.getId())
+        .build();
+        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(jo.toString());
+        } catch (Exception e) {
+         e.printStackTrace();
+        jo = Json.createObjectBuilder().add("error", e.getMessage()).build();
+        return ResponseEntity.badRequest().body(jo.toString());
+        }
+        
+    }
 
-    @PutMapping(path = "/rsvp", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> putRSVP(@RequestBody String json, Model model, @ModelAttribute RSVP rsvp){
-        rsvp = null;
-        boolean rsvpResult = false;
+    @PutMapping(path = "/rsvp/{email}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<String> putRSVP(@RequestBody String json, Model model, @ModelAttribute RSVP rsvp, @PathVariable String email){
         JsonObject resp;
         try {
+            RSVP existingRsvp = repository.getRsvpByEmail(rsvp.getEmail());
+            boolean rsvpResult = existingRsvp == null ? false : true;
             rsvp = RSVP.create(json);
+
+            if (!rsvpResult) {
+                resp = Json.createObjectBuilder()
+                .add("error message", "RSVP entry with " + email + " not found")
+                .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(resp.toString());
+            }
+
+            rsvpResult = repository.updateRSVP(rsvp);
+            resp = Json.createObjectBuilder()
+            .add("updated", rsvpResult)
+            .build();
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(resp.toString());
         } catch (Exception e) {
             e.printStackTrace();
             resp = Json.createObjectBuilder()
@@ -98,12 +130,6 @@ public class RSVPRestController {
             .build();
             return ResponseEntity.badRequest().body(resp.toString());
         }
-        rsvpResult = repository.updateRSVP(rsvp);
-        resp = Json.createObjectBuilder()
-        .add("updated", rsvpResult)
-        .build();
-
-        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(resp.toString());
     }
 
     @GetMapping(path = "/rsvps/count")
@@ -113,7 +139,6 @@ public class RSVPRestController {
         jo = Json.createObjectBuilder()
         .add("total_count", rsvp_count)
         .build();
-
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(jo.toString());
     }
 

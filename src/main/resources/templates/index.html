@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <h1>RSVP Form</h1>
     <div>
-        <form th:action="@{/api/rsvp}" method="post">
-            Name: <input type="text" id="name" name="name" >
+        <form th:action="@{/api/rsvp}" method="post" th:object="${rsvp}">
+            Name: <input type="text" id="name" name="name">
             <br>
             Email: <input type="email" id="email" name="email" required>
             <br>
-            Phone: <input type="text" id="phone" name="phone" >
+            Phone: <input type="text" id="phone" name="phone">
             <br>
             Date: <input type="datetime-local" id="confirmationDate" name="confirmationDate">
             <br>
@@ -23,4 +25,5 @@
         </form>
     </div>
 </body>
+
 </html>

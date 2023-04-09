@@ -70,9 +70,7 @@ public class RSVPRepository {
                 statement.setString(5, rsvp.getComments());
                 return statement;
             }, keyHolder);
-
-            BigInteger primaryKey = (BigInteger) keyHolder.getKey();
-            rsvp.setId(primaryKey.intValue());
+            rsvp.setId((Integer) keyHolder.getKey());
         } else {
             existingRSVP.setName(rsvp.getName());
             existingRSVP.setPhone(rsvp.getPhone());
