@@ -1,6 +1,5 @@
 package ibf2022.paf.day22workshop.repository;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;

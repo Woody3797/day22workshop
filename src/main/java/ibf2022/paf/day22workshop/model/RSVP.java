@@ -1,10 +1,7 @@
 package ibf2022.paf.day22workshop.model;
 
 import java.io.ByteArrayInputStream;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
