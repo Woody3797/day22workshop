@@ -72,8 +72,7 @@ public class RSVP {
 
     @Override
     public String toString() {
-        return "RSVP [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", confirmationDate="
-                + confirmationDate + ", comments=" + comments + "]";
+        return "RSVP [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", confirmationDate=" + confirmationDate + ", comments=" + comments + "]";
     }
 
     public static RSVP create(SqlRowSet rs) {

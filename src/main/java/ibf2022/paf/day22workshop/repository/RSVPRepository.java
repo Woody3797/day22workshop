@@ -94,8 +94,8 @@ public class RSVPRepository {
         existingRSVP.getEmail()) > 0;
     }
 
-    public Long getTotalRSVPCount() {
+    public Integer getTotalRSVPCount() {
         List<Map<String, Object>> rows = template.queryForList(DBQueries.TOTAL_RSVP_COUNT);
-        return (Long) rows.get(0).get("total_count");
+        return (Integer) rows.get(0).get("total_count");
     }
 }

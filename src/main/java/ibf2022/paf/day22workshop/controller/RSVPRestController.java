@@ -130,7 +130,7 @@ public class RSVPRestController {
 
     @GetMapping(path = "/rsvps/count")
     public ResponseEntity<String> getTotalRSVPCount() {
-        Long rsvp_count = repository.getTotalRSVPCount();
+        Integer rsvp_count = repository.getTotalRSVPCount();
         JsonObject jo;
         jo = Json.createObjectBuilder()
         .add("total_count", rsvp_count)
