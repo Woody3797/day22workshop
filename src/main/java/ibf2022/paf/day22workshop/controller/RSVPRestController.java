@@ -76,7 +76,7 @@ public class RSVPRestController {
         } catch (Exception e) {
             e.printStackTrace();
             jo = Json.createObjectBuilder().add("error", e.getMessage()).build();
-            return ResponseEntity.badRequest().body(jo.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jo.toString());
         }
     }
 
